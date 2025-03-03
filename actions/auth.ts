@@ -34,8 +34,8 @@ export const signInWithCredentials = async (
 
     return { success: true };
   } catch (error) {
-    console.log(error, "signup error");
-    return { success: false, error: "Signup error" };
+    console.log(error, "signing error");
+    return { success: false, error: "Sign error" };
   }
 };
 
@@ -55,6 +55,16 @@ export const signUp = async (params: AuthCredentials) => {
 
   if (existingUser.length > 0) {
     return { success: false, error: "User already exists" };
+  }
+
+  const existingUniversityId = await db
+    .select()
+    .from(users)
+    .where(eq(users.universityId, universityId))
+    .limit(1);
+
+  if (existingUniversityId.length > 0) {
+    return { success: false, error: "University Id already exist" };
   }
 
   const hashedPassword = await hash(password, 10);
@@ -81,6 +91,6 @@ export const signUp = async (params: AuthCredentials) => {
     return { success: true };
   } catch (error) {
     console.log(error, "signup error");
-    return { success: false, error: "Signup error" };
+    return { success: false, error: "sign up error" };
   }
 };
